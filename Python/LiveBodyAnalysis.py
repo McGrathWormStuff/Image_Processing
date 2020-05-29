@@ -5,15 +5,21 @@ import sys
 import argparse
 import scipy.ndimage as sp
 import SegmentAnalysis as SA
+import pandas
 
 # Set up cmd arguments for the user
-parser = argparse.ArgumentParser(description = 'Enter folder path, base file name, number of images, and file type')
+parser = argparse.ArgumentParser(description = 'Enter folder path, base file name, number of images, and file type' +
+    "\nEx. Current directory contains:\n\tmyfile.py\n\tWT225 directory\nWT225 directory contains:"+
+    "\n\tWT225_Snapshot44.png\n\tWT225_Snapshot45.png\n\t...")
 parser.add_argument('path', type = str, help = 'Relative folder path (ex. WT225/)')
 parser.add_argument('base_name', type = str, help = 'Base name of each image (ex. WT225_Snapshot)')
 parser.add_argument('first_num', type = int, help = 'First image number')
 parser.add_argument('last_num', type = int, help = 'Last image number')
 parser.add_argument('file_type', type = str, help = 'File type of images (ex. png or jpg)')
 args = parser.parse_args()
+
+# Set up data frame for analysis
+dt = pandas.write_excel("Cao_Supp.xlsx", sheet_name = "Table S4", skiprows = [0], index_col = 1)
 
 for num in range(args.first_num, args.last_num + 1):
     #####################################################################################
@@ -22,6 +28,7 @@ for num in range(args.first_num, args.last_num + 1):
 
     # Process a single image: read in based on the user input
     file_name = args.path + args.base_name + str(num) + '.' + args.file_type
+    print("Opening file " + file_name + ".")
     img = cv2.imread(file_name, cv2.IMREAD_GRAYSCALE)
 
     # If image cannot be processed, exit program
@@ -204,4 +211,14 @@ for num in range(args.first_num, args.last_num + 1):
     seg9int = values[0][8]
     if seg9int/seg2int > 1.3:
         head_first = True
+
+    #Tip width ratio
+    try:
+        Region7 = ImSegGray(min(y):max(y),min(x):min(x)+round(est_len/20))
+        Region8 = ImSegGray(min(y):max(y),min(x)+19*round(est_len/20):min(x)+est_len);
+        tipWidth7 = SA.stats(Region7)[1]
+        tipWidth8 = SA.stats(Region8)[1]
+        tipWidthRatio = tipWidth7/tipWidth8
+    except:
+        tipWidthRatio = 0
 
