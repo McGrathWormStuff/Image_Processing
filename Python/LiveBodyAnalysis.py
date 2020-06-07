@@ -21,8 +21,8 @@ bkCoords = args.bkCoords
 
 # Set up csv and headers for analysis
 o = open('out.csv','w')
-o.write('Folder,Name,Num,threshold,cut_off,est_len,bkMeanInt,wormMeanInt,seg2int,seg9int,tipWidth1,tipWidth2,tipWidthRatio,avgStdevInt,')
-o.write('BodMeanInt,BodAvgWidth,BodStdInt,BodPerct95,BodMedianInt\n')
+o.write('Folder,Name,Num,threshold,num_regions,cut_off,est_len,bkMeanInt,wormMeanInt,seg2int,seg9int,tipWidth1,tipWidth2,tipWidthRatio,avgStdevInt,')
+o.write('BodMeanInt,BodAvgWidth,BodStdInt,BodPerct95,BodMedianInt,BKMeanInt,BKAvgWidth,BKStdInt,BKPerct95,BKMedianInt\n')
 
 # Iterate through all folders (not files) in the given cmd head node directory.
 # Variable abs_directory is an absolute path.
@@ -61,9 +61,13 @@ for abs_directory in [f.path for f in os.scandir(args.path) if f.is_dir()]:
             print("Could not read the image " + filename)
             continue
 
-        # Write file name to output file
+        # Write file name to output file only if its within the first 100 files
         name = filename.split('.')[0]
         num = ''.join([i for i in name.split('_')[-1] if i.isdigit()])
+        # For the purpose of feature exploration, we only want the files that we
+        # manually analyzed and which are in the ground truth data
+        if int(num) > 100:
+            continue
         o.write(folder + ',')
         o.write(name + ',')
         o.write(num + ',')
@@ -231,18 +235,18 @@ for abs_directory in [f.path for f in os.scandir(args.path) if f.is_dir()]:
             tipWidth2 = SA.stats(tip2)[1]
             tipWidthRatio = tipWidth1/tipWidth2
         except:
-            tipWidthRatio = 0
+            tipWidthRatio = None
         # Write tip widths and ratio to output
         o.write(str(tipWidth1) + ',' + str(tipWidth2) + ',' + str(tipWidthRatio) + ',' + str(np.mean(values[2])))
 
         # Full worm body stats
         [BodMeanInt, BodAvgWidth, BodStdInt, BodPerct95, BodMedianInt] = SA.stats(ImSegGray[min(row):max(row),min(col):max(col)])
         o.write(str(BodMeanInt) + ',' + str(BodAvgWidth) + ',' + str(BodStdInt) + ',')
-        o.write(str(BodPerct95) + ',' + str(BodMedianInt) + ',\n')
+        o.write(str(BodPerct95) + ',' + str(BodMedianInt))
 
         # Full bk states
-        # [BKMeanInt, BKAvgWidth, BKStdInt, BKPerct95, BKMedianInt] = SA.stats(ImSegGray[0:100, 0:2000])
-        # o.write(str(BKMeanInt) + ',' + str(BKAvgWidth) + ',' + str(BKStdInt) + ',')
-        # o.write(str(BKPerct95) + ',' + str(BKMedianInt) + ',\n')
+        [BKMeanInt, BKAvgWidth, BKStdInt, BKPerct95, BKMedianInt] = SA.stats(bk)
+        o.write(str(BKMeanInt) + ',' + str(BKAvgWidth) + ',' + str(BKStdInt) + ',')
+        o.write(str(BKPerct95) + ',' + str(BKMedianInt) + ',\n')
 
 o.close()
