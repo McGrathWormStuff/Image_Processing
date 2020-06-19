@@ -25,6 +25,18 @@ def standardize(df, features):
     scaled_dt.columns = features
     return scaled_dt
 
+def my_correlation(original_dt, pca_data, main_feature):
+    corr = pd.concat([original_dt, pca_data], axis = 1).corr()
+    plt.matshow(corr, fignum = 10)
+    plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
+    plt.yticks(range(len(corr.columns)), corr.columns)
+    plt.rcParams.update({'font.size':10})
+    plt.gcf().set_size_inches(14.5, 14.5)
+    plt.title('Correlation of PCs with original Features: Analyzing ' + main_feature, pad = 60)
+    plt.savefig('PCA_correlation_figures/pca_corr_' + main_feature + '.png')
+    plt.close()
+    return corr
+
 def pca_plot(dt, features, target, name_tag = ''):
     x = dt.loc[:, features]
     y = dt.loc[:, target]
@@ -48,9 +60,10 @@ def pca_plot(dt, features, target, name_tag = ''):
         # For the selected color, you only want one strain to be plotted
         indicesToKeep = finalDf[target[0]] == i
         ax.scatter(finalDf.loc[indicesToKeep, 'pc1'], finalDf.loc[indicesToKeep, 'pc2'],
-                   c = color, s = 50)
+            c = color, s = 50)
     ax.legend(['Not ' + target[0], target[0]])
     ax.grid()
     fig.savefig('PCA_correlation_figures/PCA2_' + target[0] + name_tag + '.png')
     fig.show()
-    return fig, pca
+
+    return fig, pca, my_correlation(dt[features], principalDf, target[0] + name_tag)

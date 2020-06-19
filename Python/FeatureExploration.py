@@ -101,7 +101,7 @@ writer1.save()
 # Multiple loads
 out_multiple_loads1 = SA.pca_plot(nums_only_dt, ['BKMeanInt', 'BKStdInt', 'BKPerct95', 'BKMedianInt',
     'BKSumInt', 'est_len', 'tipWidthRatio', 'BodMeanInt', 'BodStdInt', 'BodSumInt',
-    'BodAvgWidth', 'Single_Loaded' ,'border_sum'], ['Single_Loaded'] , '1')
+    'BodAvgWidth', 'Single_Loaded','border_sum'], ['Single_Loaded'] , '1')
 out_multiple_loads2 = SA.pca_plot(nums_only_dt, ['BKMeanInt', 'BKStdInt', 'Single_Loaded'], ['Single_Loaded'], '2')
 out_multiple_loads3 = SA.pca_plot(nums_only_dt, nums_only_dt.columns, ['Single_Loaded'], '3')
 
@@ -127,6 +127,7 @@ out_head_first = SA.pca_plot(nums_only_dt, ['Head_First', 'BodMeanInt', 'MeanInt
     'MeanInt-10', 'BodMeanInt', 'perct95-1', 'perct95-2', 'perct95-3', 'perct95-4', 'perct95-5',
     'perct95-6', 'perct95-7', 'perct95-8', 'perct95-9' , 'perct95-10', 'intRatio2-9', 'stdInt-9'],
     ['Head_First'])
+
 
 writer2.save()
 
