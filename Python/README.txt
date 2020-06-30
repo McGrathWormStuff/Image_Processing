@@ -13,7 +13,10 @@
 	   of shape (512, 2048) is 0 0 2000 100.
 	c. Desired output file name
 
+	Output: csv file with all of extracted features and their associated folder and image names
+
 	Example call: python3 LiveBodyAnalysis.py /mnt/c/Users/Documents/My_Data 0 0 2000 100 output
+	For me: python3 LiveBodyAnalysis.py /mnt/c/Users/fhcle/Documents/GeorgiaTech/McGrath_Lab/Image_Annotation/Prefiltering_Manual 0 0 2000 100 extracted_features
 
 2. Feature Exploration: FeatureExploration.py User Inputs
 	a. Name of file produced by LiveBodyAnalysis.py, which must be located in same folder
@@ -27,4 +30,20 @@
 	   Img3    0	       0            ...
 	   ...
 
+	Outputs: -Merged FeatureExtraction.py data and ground truth data
+	         -Correlation values excel file
+		 -PCA values excel file
+
 	Example call: python3 FeatureExploration.py output.csv gtruth.xlsx
+
+3. Feature Selection: FeatureSelection.py User Inputs
+	a. Name of file produced by LiveBodyAnalysis.py, which must be located in same folder
+
+	Outputs: Different feature selection methods output excel files
+
+	Example call: python3 FeatureSelection.py output.xlsx
+
+
+
+Python modules to be installed: argparse, cv2, datetime, glob, matplotlib.pyplot, mlxtend, numpy, os,
+pandas, scipy sklearn, XlsxWriter
